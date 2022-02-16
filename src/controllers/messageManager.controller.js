@@ -77,6 +77,38 @@ class MessageManagerController {
         res.status(201).send('Enquiry Message was posted successfully!');
     };
 
+ // LOAD MESSAGE REPLIES
+    loadMessageReplies = async (req, res, next) => {
+
+        //load message replys
+        const messageReplies = await MessageManagerModel.LoadMessageReplies(req.body);
+    
+        if(!messageReplies) {
+    
+            throw new HttpException(500, 'Something went wrong');
+        }
+    
+        res.status(200).send(messageReplies);
+    
+        };
+    // END OF MESSAGE
+
+       // LOAD MESSAGE RESPONSES
+    loadMessageResponse = async (req, res, next) => {
+
+        //load message replys
+        const messageReplys = await MessageManagerModel.LoadMessageResponse({MESSAGE_REQUEST_ID :req.params.requestid});
+
+        if(!messageReplys) {
+
+            throw new HttpException(500, 'Something went wrong');
+        }
+
+        res.status(200).send(messageReplys);
+
+    };
+    // END OF MESSAGE
+
      //UPDATE ENQUIRY MESSAGE
      UpdateMessageReadStatus = async (req, res, next) => {
 

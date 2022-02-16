@@ -13,5 +13,7 @@ router.post('/postProviderMessage', validatePostProvider, awaitHandlerFactory(Me
 router.get('/loadMessages/:clientid', awaitHandlerFactory(MessageManagerController.LoadClientMessages));
 router.get('/providerEnquries/:subcategoryid', awaitHandlerFactory(MessageManagerController.LoadProviderEnquiries));
 router.get('/UpdateMessageReadStatus/:requestid', awaitHandlerFactory(MessageManagerController.UpdateMessageReadStatus));
+router.get('/loadMessageResponses/:requestid', awaitHandlerFactory(MessageManagerController.loadMessageResponse));
+router.post('/loadMessageReplies', awaitHandlerFactory(MessageManagerController.loadMessageReplies));    
 
 module.exports = router;

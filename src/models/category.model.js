@@ -8,6 +8,20 @@ class CategoryModel {
 
     tableName = 'wa_categories';
 
+   // GET PROVIDER CATEGORIES
+    LoadSectorProviders = async (params = {}) => {
+
+       const { columnSet, values } = multipleColumnSet(params)
+    
+        const sql = `SELECT * FROM wa_providers WHERE ${columnSet}`;
+
+        const result = await query(sql, [...values]);
+
+        // return back the first row (user)
+        return result;
+    }
+
+
     // GET ALL CATEGORIES
     GetAll = async (params = {}) => {
         let sql = `SELECT * FROM ${this.tableName}`;
@@ -21,6 +35,7 @@ class CategoryModel {
 
         return await query(sql, [...values]);
     }
+
 
     // GET SUB CATEGORIES
     GetSubCategories = async (params = {}) => {

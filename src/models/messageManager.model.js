@@ -33,6 +33,32 @@ class MessageManagerModel {
         }
     } 
 
+  // LOAD MESSAGE REPLIES
+    LoadMessageReplies = async ({ messageID, messageOwner }) => {
+
+//      const { columnSet, values } = multipleColumnSet(params)
+
+	const sql = `SELECT DISTINCT R.RESPONSE_BY, MAX(R.RESPONSE_DATE) AS RESPONSE_DATE, MESSAGE_REQUEST_ID,(SELECT COMPANY_NAME from wa_clients C WHERE C.CLIENT_ID = R.RESPONSE_BY) AS COMPANY_NAME
+                from wa_message_responses R WHERE  R.MESSAGE_REQUEST_ID = '`+ messageID  +`' AND R.RESPONSE_BY <> '`+ messageOwner +`' GROUP BY MESSAGE_REQUEST_ID, R.RESPONSE_BY;`
+
+        const result = await query(sql);
+
+        return result;
+    }
+    // END OF THAT
+
+      // LOAD MESSAGE RESPONSE
+    LoadMessageResponse = async (params = {}) => {
+
+        const { columnSet, values } = multipleColumnSet(params)
+
+        const sql = `SELECT * FROM WealthIA.wa_message_responses WHERE ${columnSet} ORDER BY RESPONSE_DATE DESC`;
+
+        const result = await query(sql, [...values]);
+
+        return result;
+    }
+    // END OF THAT
 
 
     // UPDATE MESSAGE READ STATUS
@@ -118,9 +144,10 @@ class MessageManagerModel {
     
         const { columnSet, values } = multipleColumnSet(params)
 
-        const sql = `SELECT P.PROVIDER_NAME, M.REQUEST_ID, M.CLIENT_ID, M.MESSAGE, M.CHECKED, M.STATUS, 
-                    M.TYPE, (DATE_FORMAT(M.DATE_CREATED,'%Y/%m/%d'))DATE_CREATED FROM 
+        const sql = `SELECT C.SUB_NAME, P.PROVIDER_NAME, M.REQUEST_ID, M.CLIENT_ID, M.MESSAGE, M.CHECKED, M.STATUS, 
+                    M.TYPE, (DATE_FORMAT(M.DATE_CREATED,'%Y%m%d'))DATE_CREATED FROM 
                     wa_client_messages M LEFT JOIN wa_providers P ON M.PROVIDER_ID = P.PROVIDER_ID
+                    LEFT JOIN wa_sub_categories C ON C.SUB_CATEGORY_ID = M.SUB_CATEGORY_ID
                     WHERE ${columnSet}`;
 
         const result = await query(sql, [...values]);

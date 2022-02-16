@@ -24,6 +24,19 @@ class CategoryController {
         res.send(subList);
     };
 
+
+    //LOAD SECTOR PROVIDERS
+    loadSectorProviders = async (req, res, next) => {
+
+        let subList = await CategoryModel.LoadSectorProviders({ SUB_CATEGORY_ID: req.params.sub_category_id });
+
+        if (!subList.length) {
+            throw new HttpException(404, 'Unable to load categories');
+        }
+
+        res.send(subList);
+    };
+
     //ADD SUB CATEGOGY
     createSubCategory = async (req, res, next) => {
 

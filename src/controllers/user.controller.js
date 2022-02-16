@@ -115,14 +115,15 @@ class UserController {
         }
 
         // user matched!
-        const secretKey = process.env.SECRET_JWT || "";
-        const token = jwt.sign({ user_id: user.id.toString() }, secretKey, {
+/*
+        const secretKey = 'supersecret';
+        const token = jwt.sign({ user_id: user.id.toString() }, "weathiauser", {
             expiresIn: '24h'
         });
-
+*/
         const { password, ...userWithoutPassword } = user;
 
-        res.send({ ...userWithoutPassword, token });
+        res.send({ ...userWithoutPassword });
     };
 
     checkValidation = (req) => {

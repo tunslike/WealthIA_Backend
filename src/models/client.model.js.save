@@ -35,16 +35,6 @@ class ClientModel {
 	return result[0];
      }
 
-    // COUNT CONNECTIONS
-     FetchProviderUserID = async ({provider_user_id}) => {
-        
-        const sql = `SELECT CLIENT_ID, CONTACT_NAME FROM wa_clients WHERE USER_ID = ?`;
-
-        const result  = await query(sql, [provider_user_id]);
-
-        return result[0];
-     }
-
       // FIND ONE CLIENT
       CountUnreadMessages = async ({clientid}) => {
         
@@ -56,15 +46,16 @@ class ClientModel {
         return result[0];
     }
 
-   //CHANGE CLIENT PASSWORD
-   changePassword = async ({client_id, password}) => {
+    // 	RESET CLIENT PASSWORD
+    changeClientPassword = async ({client_id, password}) => {
 
         try {
 
             var today = new Date()
             var datecreated = today
 
-            const sql = `UPDATE wa_access SET ACCESS_ID = ?, RESET_PWD_DATE = ?, CHANGE_PWD = 0 WHERE CLIENT_ID = ?`;
+            const sql = `UPDATE wa_access SET ACCESS_ID = ?, RESET_PWD_DATE = ?, 
+                         CHANGE_PWD = 1 WHERE CLIENT_ID = (SELECT CLIENT_ID FROM wa_clients WHERE USER_ID = ?);`;
 
             const result = await query(sql, [password, datecreated, client_id]);
             const affectedRows = result ? result.affectedRows : 0;
@@ -76,7 +67,8 @@ class ClientModel {
         }
     }
 
-    //RESET CLIENT PASSWORD
+
+  // CHANGE CLIENT PASSWORD
     changeClientPassword = async ({client_id, password}) => {
 
         try {
@@ -84,7 +76,7 @@ class ClientModel {
             var today = new Date()
             var datecreated = today
 
-             const sql = `UPDATE wa_access SET ACCESS_ID = ?, CHANGE_PWD_DATE = ?, 
+            const sql = `UPDATE wa_access SET ACCESS_ID = ?, RESET_PWD_DATE = ?, 
                          CHANGE_PWD = 1 WHERE CLIENT_ID = (SELECT CLIENT_ID FROM wa_clients WHERE USER_ID = ?);`;
 
             const result = await query(sql, [password, datecreated, client_id]);
@@ -120,20 +112,6 @@ class ClientModel {
 
         // return back the first row (user)
         return result[0];
-    }
-
-        // FETCH CLIENT CONNECTIONS
-    FetchClientConnections = async (params) => {
-
-        const { columnSet, values } = multipleColumnSet(params)
-
-        const sql = `SELECT * FROM wa_connections WHERE ${columnSet}`;
-
-        const result = await query(sql, [...values]);
-
-        // return back the first row (user)
-        return result;
-
     }
 
     // FETCH CLIENT ID
